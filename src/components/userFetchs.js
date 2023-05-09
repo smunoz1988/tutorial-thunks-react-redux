@@ -1,37 +1,38 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchUsers } from "../redux/user/userSlice";
 
 const UserFetches = () => {
-  const { users, isLoading, error } = useSelector((store) => store.user);
-  const [loading, setLoading] = useState(false);
-  const [hasError, setError] = useState(false);
+  const dispatch = useDispatch();
 
-  if (loading === 'not loading') {
-    return (
-      <p className="quoteAuthor">
-        Loading
-      </p>
-    );
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
+
+  const { users, isLoading, error } = useSelector((store) => store.user);
+  const [loading, setLoading] = useState(isLoading);
+  const [hasError, setError] = useState(!!error);
+
+  useEffect(() => {
+    setLoading(isLoading);
+    setError(!!error);
+  }, [isLoading, error]);
+
+  if (loading === true) {
+    return <p>Loading</p>;
   }
 
   if (hasError === true) {
-    return (
-      <p className="quoteAuthor">
-        Error
-      </p>
-    );
+    return <p>Error: {error}</p>;
   }
+
   return (
     <div>
-      {loading ? (
-        <div>Loading...</div>
-      ) : (
-        <ul>
-          {users.map((user) => (
-            <li key={user.id}>{user.name}</li>
-          ))}
-        </ul>
-      )}
+      <ul>
+        {users.map((user) => (
+          <li key={user.login.uuid}>`{user.name.first} {user.name.last}`</li>
+        ))}
+      </ul>
     </div>
   );
 };
