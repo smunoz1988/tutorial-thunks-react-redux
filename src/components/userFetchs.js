@@ -1,11 +1,39 @@
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
-const userFetchs = ({ users, isLoading, error }) => {
-    const { users, isLoading, error } = useSelector((store) => store.user)
+const UserFetches = () => {
+  const { users, isLoading, error } = useSelector((store) => store.user);
+  const [loading, setLoading] = useState(false);
+  const [hasError, setError] = useState(false);
+
+  if (loading === 'not loading') {
+    return (
+      <p className="quoteAuthor">
+        Loading
+      </p>
+    );
+  }
+
+  if (hasError === true) {
+    return (
+      <p className="quoteAuthor">
+        Error
+      </p>
+    );
+  }
   return (
-    <div>isLoading</div>
-  )
-}
+    <div>
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        <ul>
+          {users.map((user) => (
+            <li key={user.id}>{user.name}</li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
 
-
-export default userFetchs;
+export default UserFetches;
